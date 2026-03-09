@@ -1,0 +1,14 @@
+{
+  "name": "claritybridge-shared",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types and utilities for ClarityBridge",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.2"
+  }
+}
