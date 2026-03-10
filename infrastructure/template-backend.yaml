@@ -187,8 +187,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub 'ClarityBridge-GetProfile-${Environment}'
-      CodeUri: ../backend/dist/handlers/
-      Handler: getProfile.handler
+      CodeUri: ../backend/dist/
+      Handler: handlers/getProfile.handler
       Events:
         GetProfile:
           Type: HttpApi
@@ -204,8 +204,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub 'ClarityBridge-UpdateProfile-${Environment}'
-      CodeUri: ../backend/dist/handlers/
-      Handler: updateProfile.handler
+      CodeUri: ../backend/dist/
+      Handler: handlers/updateProfile.handler
       Events:
         UpdateProfile:
           Type: HttpApi
@@ -221,8 +221,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub 'ClarityBridge-CreateProject-${Environment}'
-      CodeUri: ../backend/dist/handlers/
-      Handler: createProject.handler
+      CodeUri: ../backend/dist/
+      Handler: handlers/createProject.handler
       Events:
         CreateProject:
           Type: HttpApi
@@ -238,8 +238,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub 'ClarityBridge-ListProjects-${Environment}'
-      CodeUri: ../backend/dist/handlers/
-      Handler: listProjects.handler
+      CodeUri: ../backend/dist/
+      Handler: handlers/listProjects.handler
       Events:
         ListProjects:
           Type: HttpApi
@@ -255,8 +255,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub 'ClarityBridge-GetProject-${Environment}'
-      CodeUri: ../backend/dist/handlers/
-      Handler: getProject.handler
+      CodeUri: ../backend/dist/
+      Handler: handlers/getProject.handler
       Events:
         GetProject:
           Type: HttpApi
@@ -272,8 +272,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub 'ClarityBridge-SendMessage-${Environment}'
-      CodeUri: ../backend/dist/handlers/
-      Handler: sendMessage.handler
+      CodeUri: ../backend/dist/
+      Handler: handlers/sendMessage.handler
       Events:
         SendMessage:
           Type: HttpApi
@@ -289,8 +289,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub 'ClarityBridge-GetMessages-${Environment}'
-      CodeUri: ../backend/dist/handlers/
-      Handler: getMessages.handler
+      CodeUri: ../backend/dist/
+      Handler: handlers/getMessages.handler
       Events:
         GetMessages:
           Type: HttpApi
@@ -306,8 +306,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub 'ClarityBridge-SubmitProposal-${Environment}'
-      CodeUri: ../backend/dist/handlers/
-      Handler: submitProposal.handler
+      CodeUri: ../backend/dist/
+      Handler: handlers/submitProposal.handler
       Events:
         SubmitProposal:
           Type: HttpApi
@@ -323,8 +323,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub 'ClarityBridge-GetProposals-${Environment}'
-      CodeUri: ../backend/dist/handlers/
-      Handler: getProposals.handler
+      CodeUri: ../backend/dist/
+      Handler: handlers/getProposals.handler
       Events:
         GetProposals:
           Type: HttpApi
@@ -340,8 +340,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub 'ClarityBridge-GetPresignedUploadUrl-${Environment}'
-      CodeUri: ../backend/dist/handlers/
-      Handler: getPresignedUploadUrl.handler
+      CodeUri: ../backend/dist/
+      Handler: handlers/getPresignedUploadUrl.handler
       Environment:
         Variables:
           S3_BUCKET_NAME: !Ref ClarityBridgeUploads
