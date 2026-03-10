@@ -33,11 +33,11 @@ const AppRouter: React.FC = () => {
   return (
     <Routes>
       {/* Public routes */}
-      <Route 
-        path="/login" 
-        element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />} 
+      <Route
+        path="/login"
+        element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />}
       />
-      
+
       {/* Protected routes */}
       <Route
         path="/dashboard"
@@ -47,7 +47,7 @@ const AppRouter: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      
+
       <Route
         path="/projects/new"
         element={
@@ -56,16 +56,16 @@ const AppRouter: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      
+
       <Route
-        path="/projects/:id"
+        path="/projects/:projectId"
         element={
           <ProtectedRoute>
             <ProjectDetailPage />
           </ProtectedRoute>
         }
       />
-      
+
       <Route
         path="/marketplace"
         element={
@@ -74,7 +74,7 @@ const AppRouter: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      
+
       <Route
         path="/profile"
         element={
@@ -83,10 +83,10 @@ const AppRouter: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      
+
       {/* Default redirect */}
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      
+
       {/* 404 fallback */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

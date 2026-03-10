@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { success, error } from '../lib/response'
 import { extractUserId } from '../lib/auth'
 import { DynamoService } from '../lib/dynamo'
-import type { Project, DynamoDBRecord } from '@shared/types'
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
@@ -23,7 +22,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const projectId = uuidv4()
     const now = new Date().toISOString()
 
-    const project: Project = {
+    const project: any = {
       projectId,
       clientId: userId,
       title,
@@ -42,23 +41,19 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
       proposals: [],
       createdAt: now,
       updatedAt: now,
-      gsi1pk: 'draft', // status
-      gsi1sk: now,     // createdAt
-      gsi2pk: `${budget?.min || 0}-${budget?.max || 0}`, // budget range
-      gsi2sk: timeline?.flexibility || 'flexible'        // timeline
     }
 
     // Construct DynamoDB Record
     // Partition Key: PROJECT#<projectId>
     // Sort Key: METADATA
-    const record: DynamoDBRecord = {
+    const record: any = {
       pk: `PROJECT#${projectId}`,
       sk: 'METADATA',
       entityType: 'Project',
-      gsi1pk: project.gsi1pk,
-      gsi1sk: project.gsi1sk,
-      gsi2pk: project.gsi2pk,
-      gsi2sk: project.gsi2sk,
+      gsi1pk: `USER#${userId}`, // owner's userId for GSI1 query
+      gsi1sk: 'draft',          // status as the sort key
+      gsi2pk: `${budget?.min || 0}-${budget?.max || 0}`,
+      gsi2sk: timeline?.flexibility || 'flexible',
       data: project
     }
 
