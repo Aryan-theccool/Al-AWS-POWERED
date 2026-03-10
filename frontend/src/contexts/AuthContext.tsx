@@ -3,12 +3,12 @@ import { Authenticator } from '@aws-amplify/ui-react'
 import { Amplify, Auth, Hub } from 'aws-amplify'
 import type { User } from '@shared/types'
 
-// Configure Amplify with correct v5 format
+// Configure Amplify using environment variables (set via vite.config.ts at build time)
 Amplify.configure({
   Auth: {
-    region: 'us-east-1',
-    userPoolId: 'us-east-1_pBeC76AMj',
-    userPoolWebClientId: '4a4907onrollsq8duto9474plr'
+    region: import.meta.env.VITE_AWS_REGION,
+    userPoolId: import.meta.env.VITE_COGNITO_USER_POOL_ID,
+    userPoolWebClientId: import.meta.env.VITE_COGNITO_CLIENT_ID
   }
 })
 

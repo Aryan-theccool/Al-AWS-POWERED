@@ -12,10 +12,10 @@ export default defineConfig({
     },
   },
   define: {
-    'import.meta.env.VITE_COGNITO_USER_POOL_ID': JSON.stringify('us-east-1_pBeC76AMj'),
-    'import.meta.env.VITE_COGNITO_CLIENT_ID': JSON.stringify('4a4907onrollsq8duto9474plr'),
-    'import.meta.env.VITE_AWS_REGION': JSON.stringify('us-east-1'),
-    'import.meta.env.VITE_API_URL': JSON.stringify('https://sbckvoyih4.execute-api.us-east-1.amazonaws.com/dev'),
+    'import.meta.env.VITE_COGNITO_USER_POOL_ID': JSON.stringify('ap-south-1_jO485jnFQ'),
+    'import.meta.env.VITE_COGNITO_CLIENT_ID': JSON.stringify('4g6rr38ne2qlbsqre9gjek2vms'),
+    'import.meta.env.VITE_AWS_REGION': JSON.stringify('ap-south-1'),
+    'import.meta.env.VITE_API_URL': JSON.stringify('https://mpc39jrp5b.execute-api.ap-south-1.amazonaws.com/dev'),
   },
   server: {
     port: 5173,

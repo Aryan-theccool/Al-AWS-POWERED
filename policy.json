@@ -1,0 +1,1 @@
+{"Version":"2012-10-17","Statement":[{"Sid":"AllowCF","Effect":"Allow","Principal":{"Service":"cloudfront.amazonaws.com"},"Action":"s3:GetObject","Resource":"arn:aws:s3:::claritybridge-frontend-121084934518-dev/*","Condition":{"StringEquals":{"AWS:SourceArn":"arn:aws:cloudfront::121084934518:distribution/EAO8QFJCD9AGE"}}}]}
