@@ -37,6 +37,8 @@ Globals:
         OPENAI_API_KEY: !Ref OpenAIApiKey
         STRIPE_SECRET_KEY: !Ref StripeSecretKey
         FRONTEND_URL: !Sub 'https://${FrontendDomain}'
+    Layers:
+      - !Ref ClarityBridgeLayer
 
 Resources:
   # DynamoDB Table
@@ -269,16 +271,17 @@ Resources:
         - profile
       AllowedOAuthFlowsUserPoolClient: true
 
-  # Lambda Layer for Shared Dependencies - Temporarily disabled
-  # ClarityBridgeLayer:
-  #   Type: AWS::Serverless::LayerVersion
-  #   Properties:
-  #     LayerName: !Sub 'ClarityBridge-Dependencies-${Environment}'
-  #     Description: Shared dependencies for ClarityBridge Lambda functions
-  #     ContentUri: ../backend/layer/
-  #     CompatibleRuntimes:
-  #       - nodejs18.x
-  #     RetentionPolicy: Delete
+  # Lambda Layer for Shared Dependencies
+  ClarityBridgeLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub 'ClarityBridge-Dependencies-${Environment}'
+      Description: Shared dependencies for ClarityBridge Lambda functions
+      ContentUri: ../backend/layer/
+      CompatibleRuntimes:
+        - nodejs18.x
+        - nodejs20.x
+      RetentionPolicy: Delete
 
   # HTTP API Gateway
   ClarityBridgeApi:

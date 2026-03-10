@@ -17,6 +17,7 @@ const queryClient = new QueryClient({
 })
 
 function App() {
+  console.log("MARKER: App rendering");
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
@@ -24,7 +25,7 @@ function App() {
           <AuthProvider>
             <div className="min-h-screen bg-gray-50">
               <AppRouter />
-              <Toaster 
+              <Toaster
                 position="top-right"
                 toastOptions={{
                   duration: 4000,

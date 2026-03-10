@@ -7,9 +7,9 @@ import type { User } from '@shared/types'
 // Configure Amplify with correct v5 format
 Amplify.configure({
   Auth: {
-    region: import.meta.env.VITE_AWS_REGION || 'us-east-1',
-    userPoolId: import.meta.env.VITE_COGNITO_USER_POOL_ID || '',
-    userPoolClientId: import.meta.env.VITE_COGNITO_CLIENT_ID || '',
+    region: 'us-east-1',
+    userPoolId: 'us-east-1_pBeC76AMj',
+    userPoolWebClientId: '4a4907onrollsq8duto9474plr'
   }
 })
 
@@ -73,7 +73,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           gsi1sk: new Date().toISOString()
         }
         setUser(userProfile)
-        
+
         // Get access token for API calls
         try {
           const session = await Auth.currentSession()

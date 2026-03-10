@@ -18,8 +18,8 @@ const LoginPage: React.FC = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <Authenticator
-            signUpAttributes={['email', 'given_name', 'family_name']}
-            socialProviders={['google']}
+            loginMechanisms={['email']}
+            signUpAttributes={['given_name', 'family_name']}
           >
             {({ signOut, user }) => (
               <div className="text-center">

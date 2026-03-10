@@ -1,0 +1,50 @@
+﻿[
+    {
+        "OutputKey": "ApiGatewayUrl",
+        "OutputValue": "https://sbckvoyih4.execute-api.us-east-1.amazonaws.com/dev",
+        "Description": "API Gateway endpoint URL",
+        "ExportName": "claritybridge-v1-ApiUrl"
+    },
+    {
+        "OutputKey": "UserPoolClientId",
+        "OutputValue": "4a4907onrollsq8duto9474plr",
+        "Description": "Cognito User Pool Client ID",
+        "ExportName": "claritybridge-v1-UserPoolClientId"
+    },
+    {
+        "OutputKey": "CloudFrontUrl",
+        "OutputValue": "https://dtrv0ugj9rfe0.cloudfront.net",
+        "Description": "CloudFront distribution URL",
+        "ExportName": "claritybridge-v1-CloudFrontUrl"
+    },
+    {
+        "OutputKey": "UserPoolId",
+        "OutputValue": "us-east-1_pBeC76AMj",
+        "Description": "Cognito User Pool ID",
+        "ExportName": "claritybridge-v1-UserPoolId"
+    },
+    {
+        "OutputKey": "FrontendBucketName",
+        "OutputValue": "claritybridge-frontend-121084934518-dev",
+        "Description": "S3 frontend bucket name",
+        "ExportName": "claritybridge-v1-FrontendBucket"
+    },
+    {
+        "OutputKey": "CloudFrontDistributionId",
+        "OutputValue": "EAO8QFJCD9AGE",
+        "Description": "CloudFront distribution ID",
+        "ExportName": "claritybridge-v1-CloudFrontDistributionId"
+    },
+    {
+        "OutputKey": "DynamoDBTableName",
+        "OutputValue": "ClarityBridge-dev",
+        "Description": "DynamoDB table name",
+        "ExportName": "claritybridge-v1-TableName"
+    },
+    {
+        "OutputKey": "UploadsBucketName",
+        "OutputValue": "claritybridge-uploads-121084934518-dev",
+        "Description": "S3 uploads bucket name",
+        "ExportName": "claritybridge-v1-UploadsBucket"
+    }
+]
