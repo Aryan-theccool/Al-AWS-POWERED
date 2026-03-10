@@ -3,12 +3,15 @@ import { Auth } from 'aws-amplify'
 const API_URL = import.meta.env.VITE_API_URL
 
 /**
- * Helper to get the current authenticated user's access token
+ * Helper to get the current authenticated user's ID token
+ * We use the ID token (not access token) because the API Gateway
+ * Cognito JWT authorizer validates the `aud` claim, which only
+ * exists in ID tokens (access tokens use `client_id` instead).
  */
 const getAuthToken = async (): Promise<string | null> => {
     try {
         const session = await Auth.currentSession()
-        return session.getAccessToken().getJwtToken()
+        return session.getIdToken().getJwtToken()
     } catch (error) {
         console.warn('Could not get auth token', error)
         return null

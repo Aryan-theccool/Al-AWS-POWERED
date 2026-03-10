@@ -1,0 +1,13 @@
+{
+    "requestContext": {
+        "authorizer": {
+            "jwt": {
+                "claims": {
+                    "sub": "test-user-123",
+                    "email": "test@test.com"
+                }
+            }
+        }
+    },
+    "body": "{\"title\":\"Test Project\",\"description\":\"Test Description\",\"budget\":{\"min\":100,\"max\":500,\"currency\":\"USD\"},\"timeline\":{\"estimatedWeeks\":4,\"flexibility\":\"flexible\"}}"
+}
