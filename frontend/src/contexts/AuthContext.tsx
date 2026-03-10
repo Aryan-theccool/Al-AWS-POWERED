@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { Authenticator } from '@aws-amplify/ui-react'
-import { Amplify } from 'aws-amplify'
-import { Auth } from 'aws-amplify'
+import { Amplify, Auth, Hub } from 'aws-amplify'
 import type { User } from '@shared/types'
 
 // Configure Amplify with correct v5 format
@@ -43,6 +42,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     checkAuthState()
+
+    const listener = Hub.listen('auth', ({ payload: { event } }) => {
+      if (event === 'signIn' || event === 'signOut') {
+        checkAuthState()
+      }
+    })
+
+    return () => listener()
   }, [])
 
   const checkAuthState = async () => {
