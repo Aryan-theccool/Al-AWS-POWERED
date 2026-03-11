@@ -74,4 +74,21 @@ export const api = {
         fetchWithAuth(`/projects/${projectId}`, {
             method: 'GET',
         }),
+
+    updateProject: (projectId: string, projectData: any) =>
+        fetchWithAuth(`/projects/${projectId}`, {
+            method: 'PUT',
+            body: JSON.stringify(projectData),
+        }),
+
+    getProfile: () =>
+        fetchWithAuth('/profile', {
+            method: 'GET',
+        }),
+
+    updateProfile: (profileData: any) =>
+        fetchWithAuth('/profile', {
+            method: 'PUT',
+            body: JSON.stringify(profileData),
+        }),
 }

@@ -1,0 +1,2 @@
+﻿src/pages/ProfilePage.tsx(2,1): error TS6133: 'User' is declared but its value is never read.
+src/pages/ProfilePage.tsx(5,59): error TS6133: 'Star' is declared but its value is never read.

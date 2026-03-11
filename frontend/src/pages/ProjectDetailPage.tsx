@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft, DollarSign, Clock, Calendar, Tag } from 'lucide-react'
+import { ArrowLeft, DollarSign, Clock, Calendar, Tag, ChevronDown, Briefcase } from 'lucide-react'
 import { api } from '../services/api'
+import toast from 'react-hot-toast'
 
 interface Project {
   projectId: string
@@ -28,6 +29,7 @@ const ProjectDetailPage: React.FC = () => {
   const navigate = useNavigate()
   const [project, setProject] = useState<Project | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isUpdating, setIsUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -42,6 +44,20 @@ const ProjectDetailPage: React.FC = () => {
       setError(err?.message || 'Failed to load project')
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleStatusChange = async (newStatus: string) => {
+    if (!projectId || !project) return
+    setIsUpdating(true)
+    try {
+      const result: any = await api.updateProject(projectId, { status: newStatus })
+      setProject(result?.data?.project || result?.project || null)
+      toast.success('Status updated successfully')
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to update status')
+    } finally {
+      setIsUpdating(false)
     }
   }
 
@@ -90,9 +106,32 @@ const ProjectDetailPage: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-start justify-between gap-4 mb-4">
             <h2 className="text-2xl font-bold text-gray-900">{project.title}</h2>
-            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${statusColors[project.status] || statusColors.draft}`}>
-              {project.status}
-            </span>
+            <div className="relative group">
+              <button
+                disabled={isUpdating}
+                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border transition-colors ${statusColors[project.status] || statusColors.draft} hover:bg-opacity-80`}
+              >
+                {isUpdating ? (
+                  <div className="h-4 w-4 border-2 border-current border-t-transparent animate-spin rounded-full mr-2" />
+                ) : (
+                  <Tag className="h-4 w-4 mr-2" />
+                )}
+                <span className="capitalize">{project.status}</span>
+                <ChevronDown className="h-4 w-4 ml-2" />
+              </button>
+              
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 overflow-hidden">
+                {Object.keys(statusColors).map((status) => (
+                  <button
+                    key={status}
+                    onClick={() => handleStatusChange(status)}
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 capitalize transition-colors"
+                  >
+                    {status}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
           <p className="text-gray-600 leading-relaxed">{project.description}</p>
         </div>
@@ -136,20 +175,29 @@ const ProjectDetailPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Status */}
+          {/* Updated */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
             <div className="flex items-center gap-2 text-gray-500 mb-3">
-              <Tag className="h-4 w-4" />
-              <span className="text-sm font-medium uppercase tracking-wide">Status</span>
+              <Clock className="h-4 w-4" />
+              <span className="text-sm font-medium uppercase tracking-wide">Last Updated</span>
             </div>
-            <p className="text-lg font-semibold text-gray-900 capitalize">{project.status}</p>
-            <p className="text-sm text-gray-500 mt-1">
-              Last updated {new Date(project.updatedAt).toLocaleDateString()}
+            <p className="text-lg font-semibold text-gray-900">
+              {new Date(project.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
         </div>
 
-        {/* Actions */}
+        {/* Actions Placeholder */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Proposals</h3>
+          <div className="text-center py-8">
+            <div className="h-12 w-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Briefcase className="h-6 w-6 text-gray-400" />
+            </div>
+            <p className="text-gray-500 text-sm">No proposals received yet.</p>
+          </div>
+        </div>
+
         <div className="flex gap-3">
           <Link to="/dashboard" className="btn-secondary">
             ← Back to Dashboard
@@ -160,4 +208,4 @@ const ProjectDetailPage: React.FC = () => {
   )
 }
 
-export default ProjectDetailPage
+export default ProjectDetailPage

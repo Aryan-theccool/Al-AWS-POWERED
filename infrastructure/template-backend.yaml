@@ -234,6 +234,23 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref ClarityBridgeTable
 
+  UpdateProjectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'ClarityBridge-UpdateProject-${Environment}'
+      CodeUri: ../backend/dist/
+      Handler: handlers/updateProject.handler
+      Events:
+        UpdateProject:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ClarityBridgeApi
+            Method: PUT
+            Path: /projects/{projectId}
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ClarityBridgeTable
+
   ListProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
