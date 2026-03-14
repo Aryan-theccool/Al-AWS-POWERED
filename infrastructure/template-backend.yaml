@@ -9,6 +9,11 @@ Parameters:
   OpenAIApiKey:
     Type: String
     NoEcho: true
+    Default: ""
+  GoogleApiKey:
+    Type: String
+    NoEcho: true
+    Default: ""
   StripeSecretKey:
     Type: String
     NoEcho: true
@@ -27,6 +32,7 @@ Globals:
         COGNITO_USER_POOL_ID: !Ref ClarityBridgeUserPool
         COGNITO_CLIENT_ID: !Ref ClarityBridgeWebClient
         OPENAI_API_KEY: !Ref OpenAIApiKey
+        GOOGLE_API_KEY: !Ref GoogleApiKey
         STRIPE_SECRET_KEY: !Ref StripeSecretKey
         FRONTEND_URL: !Sub 'https://${FrontendDomain}'
     Layers:
@@ -144,7 +150,7 @@ Resources:
   ClarityBridgeLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: !Sub 'ClarityBridge-Dependencies-${Environment}'
+      LayerName: !Sub 'ClarityBridge-Deps-${Environment}-v2'
       Description: Shared dependencies for ClarityBridge Lambda functions
       ContentUri: ../backend/layer/
       CompatibleRuntimes:
@@ -373,6 +379,50 @@ Resources:
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref ClarityBridgeTable
+
+  AnalyzeProjectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'ClarityBridge-AnalyzeProject-${Environment}'
+      CodeUri: ../backend/dist/
+      Handler: handlers/analyzeProject.handler
+      Events:
+        AnalyzeProject:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ClarityBridgeApi
+            Method: POST
+            Path: /projects/analyze
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:Query
+              Resource: !GetAtt ClarityBridgeTable.Arn
+
+  AnalyzeProposalFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'ClarityBridge-AnalyzeProposal-${Environment}'
+      CodeUri: ../backend/dist/
+      Handler: handlers/analyzeProposal.handler
+      Timeout: 60
+      MemorySize: 1024
+      MemorySize: 1024
+      Events:
+        AnalyzeProposal:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ClarityBridgeApi
+            Method: POST
+            Path: /projects/{projectId}/proposals/{proposalId}/analyze
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+              Resource: !GetAtt ClarityBridgeTable.Arn
 
   GetPresignedUploadUrlFunction:
     Type: AWS::Serverless::Function

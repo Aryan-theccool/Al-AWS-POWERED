@@ -20,9 +20,43 @@ const NewProjectPage: React.FC = () => {
     flexibility: 'flexible' as 'fixed' | 'flexible' | 'negotiable'
   })
 
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleAIAnalysis = async () => {
+    if (!formData.description) {
+      toast.error('Please provide a rough description first!')
+      return
+    }
+
+    setIsAnalyzing(true)
+    try {
+      const result: any = await api.analyzeProject(formData.description)
+      const analysis = result?.data?.analysis || result?.analysis
+      
+      if (analysis) {
+        setFormData(prev => ({
+          ...prev,
+          title: analysis.title || prev.title,
+          description: analysis.structuredRequirements 
+            ? `## Requirements\n${analysis.structuredRequirements.join('\n')}\n\n## Recommended Stack\n${analysis.recommendedTechStack?.join(', ')}`
+            : prev.description,
+          budgetMin: analysis.suggestedBudget?.min?.toString() || prev.budgetMin,
+          budgetMax: analysis.suggestedBudget?.max?.toString() || prev.budgetMax,
+          estimatedWeeks: analysis.suggestedTimelineWeeks?.toString() || prev.estimatedWeeks
+        }))
+        toast.success('AI has refined your requirements!')
+      }
+    } catch (err: any) {
+      toast.error('AI analysis failed. You can still create it manually.')
+      console.error(err)
+    } finally {
+      setIsAnalyzing(false)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,9 +109,9 @@ const NewProjectPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
+    <div className="min-h-screen pb-12">
       {/* Header */}
-      <div className="bg-white shadow">
+      <div className="bg-white/50 backdrop-blur-md sticky top-0 z-10 border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <button
@@ -93,14 +127,39 @@ const NewProjectPage: React.FC = () => {
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="glass-card overflow-hidden">
           <form onSubmit={handleSubmit} className="divide-y divide-gray-200">
 
             {/* Basic Details */}
             <div className="p-6 md:p-8 space-y-6">
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-1">Basic Details</h3>
-                <p className="text-sm text-gray-500 mb-4">Give your project a clear title and description so developers know what you need.</p>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">Basic Details</h3>
+                    <p className="text-sm text-gray-500">Give your project a clear title and description.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleAIAnalysis}
+                    disabled={isAnalyzing || !formData.description}
+                    className={`btn-premium ai-glow ${isAnalyzing ? 'ai-glow-active' : ''} disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    {isAnalyzing ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        AI Brainstorming...
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-lg">✨</span>
+                        Optimize with AI
+                      </>
+                    )}
+                  </button>
+                </div>
 
                 <div className="space-y-4">
                   <div>

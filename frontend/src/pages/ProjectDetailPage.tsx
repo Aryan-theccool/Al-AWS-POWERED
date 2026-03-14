@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft, DollarSign, Clock, Calendar, Tag, ChevronDown, Briefcase, Send, User } from 'lucide-react'
+import { ArrowLeft, DollarSign, Clock, Calendar, ChevronDown, Briefcase, Send, User, Sparkles } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { api } from '../services/api'
 import toast from 'react-hot-toast'
@@ -45,7 +45,9 @@ const ProjectDetailPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isUpdating, setIsUpdating] = useState(false)
   const [isSubmittingProposal, setIsSubmittingProposal] = useState(false)
+  const [isAnalyzingProposal, setIsAnalyzingProposal] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [proposalAnalysis, setProposalAnalysis] = useState<Record<string, any>>({})
 
   // Proposal form state
   const [proposalForm, setProposalForm] = useState({
@@ -119,6 +121,27 @@ const ProjectDetailPage: React.FC = () => {
     }
   }
 
+  const handleAnalyzeProposal = async (proposalId: string) => {
+    if (!projectId) return
+    
+    setIsAnalyzingProposal(proposalId)
+    try {
+      const result: any = await api.analyzeProposal(projectId, proposalId)
+      const feedback = result?.data?.feedback || result?.feedback
+      if (feedback) {
+        setProposalAnalysis(prev => ({
+          ...prev,
+          [proposalId]: feedback
+        }))
+        toast.success('AI Analysis complete!')
+      }
+    } catch (err: any) {
+      toast.error(err?.message || 'AI Analysis failed')
+    } finally {
+      setIsAnalyzingProposal(null)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -140,221 +163,307 @@ const ProjectDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen pb-20">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white/50 backdrop-blur-md sticky top-0 z-10 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16 gap-4">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="flex items-center text-gray-500 hover:text-gray-900 transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5 mr-1" />
-              <span className="text-sm font-medium">Dashboard</span>
-            </button>
-            <span className="text-gray-300">/</span>
-            <h1 className="text-lg font-semibold text-gray-900 truncate">{project.title}</h1>
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => navigate('/dashboard')} 
+                className="p-2 rounded-xl text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">
+                Project Detail
+              </h1>
+            </div>
+            <nav className="flex items-center space-x-2">
+              <Link to="/dashboard" className="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-xl text-sm font-medium transition-colors">Dashboard</Link>
+              <Link to="/profile" className="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-xl text-sm font-medium transition-colors">Profile</Link>
+            </nav>
           </div>
         </div>
       </header>
 
-      {/* Main */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        {/* Title & Status Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">{project.title}</h2>
-            <div className="flex items-center gap-2">
-              <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${statusColors[project.status] || statusColors.draft}`}>
-                <Tag className="h-4 w-4 mr-2" />
-                <span className="capitalize">{project.status}</span>
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* Project Header Card */}
+        <div className="glass-card p-8 mb-8 border-l-4 border-l-primary-500">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border ${statusColors[project.status] || statusColors.draft}`}>
+                  {project.status.replace('_', ' ')}
+                </span>
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                  ID: {project.projectId.slice(0, 8)}
+                </span>
               </div>
-              
-              {user?.userType === 'client' && project.clientId === userId && (
-                <div className="relative group">
-                  <button
-                    disabled={isUpdating}
-                    className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-                  >
-                    <ChevronDown className="h-5 w-5 text-gray-500" />
-                  </button>
-                  
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 overflow-hidden">
-                    {Object.keys(statusColors).map((status) => (
-                      <button
-                        key={status}
-                        onClick={() => handleStatusChange(status)}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 capitalize transition-colors"
-                      >
-                        {status}
-                      </button>
-                    ))}
-                  </div>
+              <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">{project.title}</h2>
+            </div>
+
+            {user?.userType?.toLowerCase() === 'client' && project.clientId === userId && (
+              <div className="relative inline-block w-full md:w-auto">
+                <select
+                  value={project.status}
+                  onChange={(e) => handleStatusChange(e.target.value)}
+                  disabled={isUpdating}
+                  className="appearance-none w-full md:w-48 bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-10 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm transition-all"
+                >
+                  <option value="draft">Review Draft</option>
+                  <option value="active">Publish to Marketplace</option>
+                  <option value="in_progress">Mark In Progress</option>
+                  <option value="completed">Mark Completed</option>
+                  <option value="cancelled">Archive Project</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-400">
+                  <ChevronDown className="h-4 w-4" />
                 </div>
-              )}
+              </div>
+            )}
+          </div>
+
+          <div className="prose prose-indigo max-w-none">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">Project Description</h4>
+            <div className="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap bg-gray-50/50 p-6 rounded-2xl border border-gray-100/50">
+              {project.description}
             </div>
           </div>
-          <p className="text-gray-600 leading-relaxed">{project.description}</p>
         </div>
 
         {/* Details Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Budget */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
           {project.budget && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-              <div className="flex items-center gap-2 text-gray-500 mb-3">
+            <div className="glass-card p-6 border-t-4 border-t-green-500/50">
+              <div className="flex items-center gap-2 text-gray-400 mb-2">
                 <DollarSign className="h-4 w-4" />
-                <span className="text-sm font-medium uppercase tracking-wide">Budget</span>
+                <span className="text-xs font-bold uppercase tracking-widest">Allocated Budget</span>
               </div>
-              <p className="text-2xl font-bold text-gray-900">
-                {project.budget.min.toLocaleString()} – {project.budget.max.toLocaleString()}
+              <p className="text-2xl font-black text-gray-900">
+                ${project.budget.min.toLocaleString()} – ${project.budget.max.toLocaleString()}
               </p>
-              <p className="text-sm text-gray-500 mt-1">{project.budget.currency}</p>
+              <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-tighter">{project.budget.currency} FIXED-RANGE</p>
             </div>
           )}
 
-          {/* Timeline */}
           {project.timeline && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-              <div className="flex items-center gap-2 text-gray-500 mb-3">
+            <div className="glass-card p-6 border-t-4 border-t-blue-500/50">
+              <div className="flex items-center gap-2 text-gray-400 mb-2">
                 <Clock className="h-4 w-4" />
-                <span className="text-sm font-medium uppercase tracking-wide">Timeline</span>
+                <span className="text-xs font-bold uppercase tracking-widest">Expected Timeline</span>
               </div>
-              <p className="text-2xl font-bold text-gray-900">{project.timeline.estimatedWeeks} weeks</p>
-              <p className="text-sm text-gray-500 mt-1 capitalize">{project.timeline.flexibility}</p>
+              <p className="text-2xl font-black text-gray-900">{project.timeline.estimatedWeeks} Success Weeks</p>
+              <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-tighter capitalize">{project.timeline.flexibility} DELIVERY</p>
             </div>
           )}
-
-          {/* Created */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-            <div className="flex items-center gap-2 text-gray-500 mb-3">
-              <Calendar className="h-4 w-4" />
-              <span className="text-sm font-medium uppercase tracking-wide">Created</span>
-            </div>
-            <p className="text-lg font-semibold text-gray-900">
-              {new Date(project.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </p>
-          </div>
-
-          {/* Updated */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-            <div className="flex items-center gap-2 text-gray-500 mb-3">
-              <Clock className="h-4 w-4" />
-              <span className="text-sm font-medium uppercase tracking-wide">Last Updated</span>
-            </div>
-            <p className="text-lg font-semibold text-gray-900">
-              {new Date(project.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </p>
-          </div>
         </div>
 
         {/* Proposals Section */}
-        {user?.userType === 'client' && project.clientId === userId ? (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-              <Briefcase className="h-5 w-5 text-primary-600" />
-              Received Proposals ({proposals.length})
-            </h3>
+        {user?.userType?.toLowerCase() === 'client' && project.clientId === userId ? (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between px-2">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-3">
+                <Briefcase className="h-5 w-5 text-primary-500" />
+                Expert Proposals ({proposals.length})
+              </h3>
+            </div>
             
             {proposals.length > 0 ? (
-              <div className="space-y-6">
+              <div className="grid grid-cols-1 gap-6">
                 {proposals.map((proposal) => (
-                  <div key={proposal.proposalId} className="border border-gray-100 rounded-xl p-5 hover:border-primary-100 hover:bg-primary-50/30 transition-all">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center">
-                          <User className="h-5 w-5 text-primary-600" />
+                  <div key={proposal.proposalId} className="glass-card p-6 flex flex-col gap-6 relative overflow-hidden group">
+                    <div className="flex flex-col md:flex-row gap-6">
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-4">
+                            <div className="h-12 w-12 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                              <User className="h-6 w-6" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-gray-900 uppercase tracking-tight">
+                                Expert ID: {proposal.developerId.slice(0, 8)}
+                              </p>
+                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                Submitted {new Date(proposal.submittedAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <button 
+                            onClick={() => handleAnalyzeProposal(proposal.proposalId)}
+                            disabled={!!isAnalyzingProposal}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${
+                              proposalAnalysis[proposal.proposalId] 
+                                ? 'bg-green-50 text-green-600 border border-green-100'
+                                : 'bg-primary-50 text-primary-600 hover:bg-primary-100 hover:shadow-md border border-primary-100'
+                            }`}
+                          >
+                            {isAnalyzingProposal === proposal.proposalId ? (
+                              <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                            ) : <Sparkles className="h-3 w-3" />}
+                            AI Insights
+                          </button>
                         </div>
+                        <div className="bg-white/40 p-5 rounded-2xl border border-white/60 text-gray-700 text-sm leading-relaxed italic mb-4">
+                          "{proposal.approach}"
+                        </div>
+                      </div>
+                      <div className="md:w-48 flex md:flex-col justify-between md:justify-center items-center md:border-l border-gray-100 md:pl-6 text-center">
                         <div>
-                          <p className="text-sm font-semibold text-gray-900 border-b border-dashed border-gray-200 pb-0.5 mb-1">
-                            Developer ID: {proposal.developerId.slice(0, 8)}...
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Submitted on {new Date(proposal.submittedAt).toLocaleDateString()}
-                          </p>
+                          <p className="text-2xl font-black text-primary-600">${proposal.budget.toLocaleString()}</p>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">{proposal.timeline} Days ETA</p>
+                        </div>
+                        <button className="mt-4 text-xs font-bold text-primary-600 hover:text-primary-700 uppercase tracking-widest px-4 py-2 bg-primary-50 rounded-xl transition-colors">
+                          View Profile
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* AI Analysis Result */}
+                    {proposalAnalysis[proposal.proposalId] && (
+                      <div className="mt-4 pt-6 border-t border-gray-100 animate-in fade-in slide-in-from-top-4 duration-500">
+                        <div className="flex items-center gap-2 mb-4">
+                          <div className="h-6 w-6 rounded-full bg-primary-100 flex items-center justify-center">
+                            <Sparkles className="h-3 w-3 text-primary-600" />
+                          </div>
+                          <span className="text-[10px] font-bold text-primary-600 uppercase tracking-widest">Intelligent Proposal Evaluation</span>
+                          <div className="ml-auto px-3 py-1 bg-primary-600 text-white rounded-full text-[10px] font-black tracking-widest">
+                            {proposalAnalysis[proposal.proposalId].matchScore}% MATCH
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-4">
+                            <div>
+                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Executive Summary</p>
+                              <p className="text-xs text-gray-700 leading-relaxed font-medium">
+                                {proposalAnalysis[proposal.proposalId].executiveSummary}
+                              </p>
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Verdict</p>
+                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                                    proposalAnalysis[proposal.proposalId].verdict === 'Strong Match' 
+                                        ? 'bg-green-100 text-green-700 border-green-200' 
+                                        : 'bg-yellow-100 text-yellow-700 border-yellow-200'
+                                }`}>
+                                    {proposalAnalysis[proposal.proposalId].verdict}
+                                </span>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-gray-50/50 p-5 rounded-2xl border border-gray-100/50">
+                            <div className="flex gap-4">
+                              <div className="flex-1">
+                                <p className="text-[10px] font-bold text-green-600 uppercase tracking-widest mb-2">Key Strengths</p>
+                                <ul className="space-y-2">
+                                  {proposalAnalysis[proposal.proposalId].strengths.map((s: string, i: number) => (
+                                    <li key={i} className="text-[11px] text-gray-600 flex items-start gap-2">
+                                      <span className="text-green-500 font-bold">•</span> {s}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-2">Concerns/Gaps</p>
+                                <ul className="space-y-2">
+                                  {proposalAnalysis[proposal.proposalId].concerns.map((c: string, i: number) => (
+                                    <li key={i} className="text-[11px] text-gray-600 flex items-start gap-2">
+                                      <span className="text-amber-500 font-bold">•</span> {c}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-gray-900">${proposal.budget.toLocaleString()}</p>
-                        <p className="text-xs text-gray-500">{proposal.timeline} days estimated</p>
-                      </div>
-                    </div>
-                    <div className="bg-white/50 rounded-lg p-3 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap italic">
-                      "{proposal.approach}"
-                    </div>
+                    )}
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                <Briefcase className="h-10 w-10 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500 text-sm font-medium">No proposals yet</p>
-                <p className="text-xs text-gray-400 mt-1">Wait for developers to reach out.</p>
+              <div className="text-center py-20 glass-card bg-gray-50/30 border-dashed border-2">
+                <Briefcase className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <h4 className="text-lg font-bold text-gray-400 italic">Awaiting Experts</h4>
+                <p className="text-xs text-gray-400 mt-2 uppercase tracking-widest">Your project is visible to top-tier talent</p>
               </div>
             )}
           </div>
         ) : user?.userType?.toLowerCase() === 'developer' && project.status === 'active' ? (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-              <Send className="h-5 w-5 text-primary-600" />
-              Submit Your Proposal
+          <div className="glass-card p-8 border-t-4 border-t-primary-500">
+            <h3 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-3">
+              <Send className="h-5 w-5 text-primary-500" />
+              Secure This Project
             </h3>
             
-            <form onSubmit={handleProposalSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form onSubmit={handleProposalSubmit} className="space-y-6">
+              <div>
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Strategy & Approach</label>
+                <textarea
+                  required
+                  rows={6}
+                  value={proposalForm.approach}
+                  onChange={(e) => setProposalForm({ ...proposalForm, approach: e.target.value })}
+                  placeholder="Detail your specialized approach to this project..."
+                  className="w-full bg-white/50 border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-primary-500 outline-none placeholder:text-gray-300 transition-all"
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Proposed Budget (USD)</label>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Fixed Bid (USD)</label>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <input
                       type="number"
                       required
-                      placeholder="e.g. 5000"
-                      className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       value={proposalForm.budget}
                       onChange={(e) => setProposalForm({ ...proposalForm, budget: e.target.value })}
+                      placeholder="5000"
+                      className="w-full pl-10 pr-4 py-3 bg-white/50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-primary-500 outline-none font-bold transition-all"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Estimated Timeline (Days)</label>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Estimated Days</label>
                   <div className="relative">
-                    <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <input
                       type="number"
                       required
-                      placeholder="e.g. 14"
-                      className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       value={proposalForm.timeline}
                       onChange={(e) => setProposalForm({ ...proposalForm, timeline: e.target.value })}
+                      placeholder="14"
+                      className="w-full pl-10 pr-4 py-3 bg-white/50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-primary-500 outline-none font-bold transition-all"
                     />
                   </div>
                 </div>
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Your Approach & Experience</label>
-                <textarea
-                  required
-                  rows={4}
-                  placeholder="Describe how you will tackle this project and why you are the best fit..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-                  value={proposalForm.approach}
-                  onChange={(e) => setProposalForm({ ...proposalForm, approach: e.target.value })}
-                />
-              </div>
-
               <button
                 type="submit"
                 disabled={isSubmittingProposal}
-                className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium transition-colors disabled:opacity-50"
+                className="btn-premium w-full py-4 text-lg mt-4 shadow-xl shadow-primary-500/20"
               >
                 {isSubmittingProposal ? (
-                  <div className="h-5 w-5 border-2 border-white border-t-transparent animate-spin rounded-full mr-2" />
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Securing Connection...
+                  </span>
                 ) : (
-                  <Send className="h-4 w-4 mr-2" />
+                  <>
+                    <Briefcase className="h-5 w-5 mr-2" />
+                    Submit High-Impact Proposal
+                  </>
                 )}
-                Submit Proposal
               </button>
             </form>
           </div>

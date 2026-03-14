@@ -15,6 +15,7 @@
     "@aws-sdk/client-ses": "^3.300.0",
     "@aws-sdk/lib-dynamodb": "^3.300.0",
     "@aws-sdk/s3-request-presigner": "^3.300.0",
+    "@google/generative-ai": "^0.24.1",
     "joi": "^17.9.0",
     "jsonwebtoken": "^9.0.0",
     "openai": "^4.0.0",

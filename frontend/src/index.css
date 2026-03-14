@@ -3,12 +3,27 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --primary-main: 250 84% 54%; /* Vibrant Indigo */
+    --primary-glow: 250 84% 54% / 0.15;
+    --accent-main: 270 95% 60%; /* Electric Violet */
+    --bg-main: 220 33% 98%;
+    --glass-bg: 255 255 255 / 0.7;
+    --glass-border: 255 255 255 / 0.5;
+  }
+
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    background-color: hsl(var(--bg-main));
+    color: #1a1a1a;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(250, 84%, 54%, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(270, 95%, 60%, 0.05) 0px, transparent 50%);
+    min-height: 100vh;
   }
 }
 
@@ -28,4 +43,71 @@
   .card {
     @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
   }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    @apply rounded-2xl transition-all duration-300;
+  }
+
+  .glass-card:hover {
+    border-color: hsla(250, 84%, 54%, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+  }
+
+  .btn-premium {
+    @apply relative overflow-hidden px-6 py-2.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2;
+    background: linear-gradient(135deg, hsl(var(--primary-main)), hsl(var(--accent-main)));
+    color: white;
+    box-shadow: 0 4px 15px hsla(250, 84%, 54%, 0.3);
+  }
+
+  .btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px hsla(250, 84%, 54%, 0.4);
+  }
+
+  .btn-premium:active {
+    transform: translateY(0);
+  }
+
+  .ai-glow {
+    position: relative;
+  }
+
+  .ai-glow::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+    filter: blur(8px);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: inherit;
+  }
+
+  .ai-glow-active::after {
+    opacity: 1;
+    animation: glow-pulse 2s infinite linear;
+  }
+}
+
+@keyframes glow-pulse {
+  0% { filter: blur(8px); opacity: 0.6; }
+  50% { filter: blur(12px); opacity: 0.9; }
+  100% { filter: blur(8px); opacity: 0.6; }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.float-animation {
+  animation: float 4s ease-in-out infinite;
 }

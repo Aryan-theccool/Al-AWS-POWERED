@@ -109,4 +109,15 @@ export const api = {
         fetchWithAuth(`/projects/${projectId}/proposals`, {
             method: 'GET',
         }),
+
+    analyzeProject: (description: string) =>
+        fetchWithAuth('/projects/analyze', {
+            method: 'POST',
+            body: JSON.stringify({ description }),
+        }),
+
+    analyzeProposal: (projectId: string, proposalId: string) =>
+        fetchWithAuth(`/projects/${projectId}/proposals/${proposalId}/analyze`, {
+            method: 'POST',
+        }),
 }
