@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import { Authenticator } from '@aws-amplify/ui-react'
 import { Amplify, Auth, Hub } from 'aws-amplify'
 import type { User } from '@shared/types'
+import { api } from '../services/api'
 
 // Configure Amplify using environment variables (set via vite.config.ts at build time)
 Amplify.configure({
@@ -17,6 +18,7 @@ interface AuthContextType {
   userId: string | null
   isLoading: boolean
   signOut: () => Promise<void>
+  refreshUser: () => Promise<void>
   accessToken: string | null
 }
 
@@ -54,18 +56,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const checkAuthState = async () => {
     try {
-      const user = await Auth.currentAuthenticatedUser()
-      if (user) {
-        setUserId(user.username)
-        // TODO: Fetch full user profile from API
-        // For now, create a minimal user object
-        const userProfile: User = {
-          userId: user.username,
-          email: user.attributes?.email || '',
-          userType: 'client', // Default, will be updated from API
+      const authUser = await Auth.currentAuthenticatedUser()
+      if (authUser) {
+        setUserId(authUser.username)
+        
+        // Initial minimal user object
+        const initialUser: User = {
+          userId: authUser.username,
+          email: authUser.attributes?.email || '',
+          userType: 'client', // Temporary default
           profile: {
-            firstName: user.attributes?.given_name || '',
-            lastName: user.attributes?.family_name || '',
+            firstName: authUser.attributes?.given_name || '',
+            lastName: authUser.attributes?.family_name || '',
             preferences: {
               emailNotifications: true,
               pushNotifications: true,
@@ -79,12 +81,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           gsi1pk: 'client',
           gsi1sk: new Date().toISOString()
         }
-        setUser(userProfile)
+        setUser(initialUser)
 
         // Get access token for API calls
         try {
           const session = await Auth.currentSession()
-          setAccessToken(session.getAccessToken().getJwtToken())
+          setAccessToken(session.getIdToken().getJwtToken())
+          
+          // Fetch full user profile from API
+          try {
+            const profileResult: any = await api.getProfile()
+            const fullProfile = profileResult?.data?.user || profileResult?.user
+            if (fullProfile) {
+              setUser(fullProfile)
+            }
+          } catch (profileError) {
+            console.error('Failed to fetch user profile:', profileError)
+          }
         } catch (tokenError) {
           console.log('Could not fetch auth session:', tokenError)
         }
@@ -97,6 +110,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const refreshUser = async () => {
+    await checkAuthState()
   }
 
   const signOut = async () => {
@@ -115,6 +132,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     userId,
     isLoading,
     signOut,
+    refreshUser,
     accessToken
   }
 

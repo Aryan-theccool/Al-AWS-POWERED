@@ -91,4 +91,22 @@ export const api = {
             method: 'PUT',
             body: JSON.stringify(profileData),
         }),
+
+    // Marketplace
+    listActiveProjects: () =>
+        fetchWithAuth('/marketplace/projects', {
+            method: 'GET',
+        }),
+
+    // Proposals
+    createProposal: (projectId: string, proposalData: any) =>
+        fetchWithAuth(`/projects/${projectId}/proposals`, {
+            method: 'POST',
+            body: JSON.stringify(proposalData),
+        }),
+
+    getProposals: (projectId: string) =>
+        fetchWithAuth(`/projects/${projectId}/proposals`, {
+            method: 'GET',
+        }),
 }

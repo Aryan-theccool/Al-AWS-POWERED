@@ -285,6 +285,40 @@ Resources:
         - DynamoDBReadPolicy:
             TableName: !Ref ClarityBridgeTable
 
+  ListActiveProjectsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'ClarityBridge-ListActiveProjects-${Environment}'
+      CodeUri: ../backend/dist/
+      Handler: handlers/listActiveProjects.handler
+      Events:
+        ListActiveProjects:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ClarityBridgeApi
+            Method: GET
+            Path: /marketplace/projects
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ClarityBridgeTable
+
+  CreateProposalFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'ClarityBridge-CreateProposal-${Environment}'
+      CodeUri: ../backend/dist/
+      Handler: handlers/createProposal.handler
+      Events:
+        CreateProposal:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ClarityBridgeApi
+            Method: POST
+            Path: /projects/{projectId}/proposals
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ClarityBridgeTable
+
   SendMessageFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -319,19 +353,6 @@ Resources:
         - DynamoDBReadPolicy:
             TableName: !Ref ClarityBridgeTable
 
-  SubmitProposalFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub 'ClarityBridge-SubmitProposal-${Environment}'
-      CodeUri: ../backend/dist/
-      Handler: handlers/submitProposal.handler
-      Events:
-        SubmitProposal:
-          Type: HttpApi
-          Properties:
-            ApiId: !Ref ClarityBridgeApi
-            Method: POST
-            Path: /proposals
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ClarityBridgeTable
@@ -348,7 +369,7 @@ Resources:
           Properties:
             ApiId: !Ref ClarityBridgeApi
             Method: GET
-            Path: /proposals/{projectId}
+            Path: /projects/{projectId}/proposals
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref ClarityBridgeTable

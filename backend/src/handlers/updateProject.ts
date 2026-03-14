@@ -31,6 +31,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const updatedRecord: any = {
       ...record,
       gsi1sk: status, // keep gsi1sk in sync with status
+      gsi2pk: `STATUS#${status}`, // update marketplace index
       data: updatedData,
     }
 

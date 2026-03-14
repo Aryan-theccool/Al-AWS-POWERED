@@ -65,21 +65,37 @@ export class DynamoService {
    * Query items using GSI1
    */
   static async queryByGSI(gsi1pk: string, gsi1sk?: string): Promise<any[]> {
-    let keyConditionExpression = 'gsi1pk = :gsi1pk'
-    const expressionAttributeValues: Record<string, any> = { ':gsi1pk': gsi1pk }
-    
-    if (gsi1sk) {
-      keyConditionExpression += ' AND gsi1sk = :gsi1sk'
-      expressionAttributeValues[':gsi1sk'] = gsi1sk
+    return this.queryByIndex('GSI1', 'gsi1pk', gsi1pk, 'gsi1sk', gsi1sk)
+  }
+
+  /**
+   * Generic query for any index
+   */
+  static async queryByIndex(
+    indexName: string,
+    pkName: string,
+    pkValue: string,
+    skName?: string,
+    skValue?: string
+  ): Promise<any[]> {
+    let keyConditionExpression = `#pk = :pk`
+    const expressionAttributeNames: Record<string, string> = { '#pk': pkName }
+    const expressionAttributeValues: Record<string, any> = { ':pk': pkValue }
+
+    if (skName && skValue) {
+      keyConditionExpression += ` AND #sk = :sk`
+      expressionAttributeNames['#sk'] = skName
+      expressionAttributeValues[':sk'] = skValue
     }
-    
+
     const command = new QueryCommand({
       TableName: TABLE_NAME,
-      IndexName: 'GSI1',
+      IndexName: indexName,
       KeyConditionExpression: keyConditionExpression,
+      ExpressionAttributeNames: expressionAttributeNames,
       ExpressionAttributeValues: expressionAttributeValues
     })
-    
+
     const result = await docClient.send(command)
     return result.Items || []
   }

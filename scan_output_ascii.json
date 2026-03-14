@@ -1,0 +1,519 @@
+{
+    "Items": [
+        {
+            "gsi2sk": {
+                "S": "flexible"
+            },
+            "entityType": {
+                "S": "Project"
+            },
+            "gsi1sk": {
+                "S": "2026-03-10T18:19:02.855Z"
+            },
+            "data": {
+                "M": {
+                    "clientId": {
+                        "S": "2133cd1a-80e1-706f-3a1c-8898926bd818"
+                    },
+                    "gsi1sk": {
+                        "S": "2026-03-10T18:19:02.855Z"
+                    },
+                    "gsi2sk": {
+                        "S": "flexible"
+                    },
+                    "gsi1pk": {
+                        "S": "draft"
+                    },
+                    "description": {
+                        "S": "uggkjbkj"
+                    },
+                    "title": {
+                        "S": "hggkj"
+                    },
+                    "createdAt": {
+                        "S": "2026-03-10T18:19:02.855Z"
+                    },
+                    "gsi2pk": {
+                        "S": "56-88"
+                    },
+                    "timeline": {
+                        "M": {
+                            "estimatedWeeks": {
+                                "N": "55"
+                            },
+                            "flexibility": {
+                                "S": "flexible"
+                            }
+                        }
+                    },
+                    "proposals": {
+                        "L": []
+                    },
+                    "milestones": {
+                        "L": []
+                    },
+                    "projectId": {
+                        "S": "5b432c8a-89a4-49ad-b580-8f60a8526b7b"
+                    },
+                    "status": {
+                        "S": "draft"
+                    },
+                    "budget": {
+                        "M": {
+                            "max": {
+                                "N": "88"
+                            },
+                            "currency": {
+                                "S": "USD"
+                            },
+                            "min": {
+                                "N": "56"
+                            }
+                        }
+                    },
+                    "updatedAt": {
+                        "S": "2026-03-10T18:19:02.855Z"
+                    }
+                }
+            },
+            "sk": {
+                "S": "METADATA"
+            },
+            "pk": {
+                "S": "PROJECT#5b432c8a-89a4-49ad-b580-8f60a8526b7b"
+            },
+            "gsi1pk": {
+                "S": "draft"
+            },
+            "gsi2pk": {
+                "S": "56-88"
+            }
+        },
+        {
+            "gsi2sk": {
+                "S": "flexible"
+            },
+            "entityType": {
+                "S": "Project"
+            },
+            "gsi1sk": {
+                "S": "draft"
+            },
+            "data": {
+                "M": {
+                    "createdAt": {
+                        "S": "2026-03-10T18:34:49.942Z"
+                    },
+                    "clientId": {
+                        "S": "2133cd1a-80e1-706f-3a1c-8898926bd818"
+                    },
+                    "description": {
+                        "S": "copy"
+                    },
+                    "timeline": {
+                        "M": {
+                            "estimatedWeeks": {
+                                "N": "3"
+                            },
+                            "flexibility": {
+                                "S": "flexible"
+                            }
+                        }
+                    },
+                    "proposals": {
+                        "L": []
+                    },
+                    "title": {
+                        "S": "leetcode"
+                    },
+                    "milestones": {
+                        "L": []
+                    },
+                    "projectId": {
+                        "S": "54ba2d6c-3de3-4a02-8daa-5fe78b9556e1"
+                    },
+                    "status": {
+                        "S": "draft"
+                    },
+                    "budget": {
+                        "M": {
+                            "max": {
+                                "N": "5000"
+                            },
+                            "currency": {
+                                "S": "USD"
+                            },
+                            "min": {
+                                "N": "400"
+                            }
+                        }
+                    },
+                    "updatedAt": {
+                        "S": "2026-03-10T18:34:49.942Z"
+                    }
+                }
+            },
+            "sk": {
+                "S": "METADATA"
+            },
+            "pk": {
+                "S": "PROJECT#54ba2d6c-3de3-4a02-8daa-5fe78b9556e1"
+            },
+            "gsi1pk": {
+                "S": "USER#2133cd1a-80e1-706f-3a1c-8898926bd818"
+            },
+            "gsi2pk": {
+                "S": "400-5000"
+            }
+        },
+        {
+            "gsi2sk": {
+                "S": "2026-03-14T12:59:55.793Z"
+            },
+            "entityType": {
+                "S": "Project"
+            },
+            "gsi1sk": {
+                "S": "active"
+            },
+            "data": {
+                "M": {
+                    "createdAt": {
+                        "S": "2026-03-14T12:59:55.793Z"
+                    },
+                    "clientId": {
+                        "S": "41530d0a-70a1-70f5-5447-a13bf7b2068d"
+                    },
+                    "description": {
+                        "S": "This is a test project to check marketplace visibility."
+                    },
+                    "timeline": {
+                        "M": {
+                            "estimatedWeeks": {
+                                "N": "1"
+                            },
+                            "flexibility": {
+                                "S": "flexible"
+                            }
+                        }
+                    },
+                    "proposals": {
+                        "L": []
+                    },
+                    "title": {
+                        "S": "Test Project"
+                    },
+                    "milestones": {
+                        "L": []
+                    },
+                    "projectId": {
+                        "S": "462873da-16b2-4ada-82cf-1fceb4dfc2ff"
+                    },
+                    "status": {
+                        "S": "active"
+                    },
+                    "budget": {
+                        "M": {
+                            "max": {
+                                "N": "500"
+                            },
+                            "currency": {
+                                "S": "USD"
+                            },
+                            "min": {
+                                "N": "100"
+                            }
+                        }
+                    },
+                    "updatedAt": {
+                        "S": "2026-03-14T13:00:39.613Z"
+                    }
+                }
+            },
+            "sk": {
+                "S": "METADATA"
+            },
+            "pk": {
+                "S": "PROJECT#462873da-16b2-4ada-82cf-1fceb4dfc2ff"
+            },
+            "gsi1pk": {
+                "S": "USER#41530d0a-70a1-70f5-5447-a13bf7b2068d"
+            },
+            "gsi2pk": {
+                "S": "STATUS#active"
+            }
+        },
+        {
+            "gsi2sk": {
+                "S": "flexible"
+            },
+            "entityType": {
+                "S": "Project"
+            },
+            "gsi1sk": {
+                "S": "2026-03-10T18:17:14.497Z"
+            },
+            "data": {
+                "M": {
+                    "clientId": {
+                        "S": "2133cd1a-80e1-706f-3a1c-8898926bd818"
+                    },
+                    "gsi1sk": {
+                        "S": "2026-03-10T18:17:14.497Z"
+                    },
+                    "gsi2sk": {
+                        "S": "flexible"
+                    },
+                    "gsi1pk": {
+                        "S": "draft"
+                    },
+                    "description": {
+                        "S": "copy"
+                    },
+                    "title": {
+                        "S": "leetcode"
+                    },
+                    "createdAt": {
+                        "S": "2026-03-10T18:17:14.497Z"
+                    },
+                    "gsi2pk": {
+                        "S": "3000-4000"
+                    },
+                    "timeline": {
+                        "M": {
+                            "estimatedWeeks": {
+                                "N": "4"
+                            },
+                            "flexibility": {
+                                "S": "flexible"
+                            }
+                        }
+                    },
+                    "proposals": {
+                        "L": []
+                    },
+                    "milestones": {
+                        "L": []
+                    },
+                    "projectId": {
+                        "S": "6c7fe081-3791-4335-b0e4-03d6ace79753"
+                    },
+                    "status": {
+                        "S": "draft"
+                    },
+                    "budget": {
+                        "M": {
+                            "max": {
+                                "N": "4000"
+                            },
+                            "currency": {
+                                "S": "USD"
+                            },
+                            "min": {
+                                "N": "3000"
+                            }
+                        }
+                    },
+                    "updatedAt": {
+                        "S": "2026-03-10T18:17:14.497Z"
+                    }
+                }
+            },
+            "sk": {
+                "S": "METADATA"
+            },
+            "pk": {
+                "S": "PROJECT#6c7fe081-3791-4335-b0e4-03d6ace79753"
+            },
+            "gsi1pk": {
+                "S": "draft"
+            },
+            "gsi2pk": {
+                "S": "3000-4000"
+            }
+        },
+        {
+            "entityType": {
+                "S": "UserProfile"
+            },
+            "sk": {
+                "S": "PROFILE"
+            },
+            "gsi1sk": {
+                "S": "a133fdea-40d1-70a7-f780-31c01e637f62"
+            },
+            "pk": {
+                "S": "USER#a133fdea-40d1-70a7-f780-31c01e637f62"
+            },
+            "data": {
+                "M": {
+                    "createdAt": {
+                        "S": "2026-03-14T17:48:16.844Z"
+                    },
+                    "userType": {
+                        "S": "developer"
+                    },
+                    "userId": {
+                        "S": "a133fdea-40d1-70a7-f780-31c01e637f62"
+                    },
+                    "email": {
+                        "S": "test_dev@claritybridge.com"
+                    },
+                    "profile": {
+                        "M": {
+                            "skills": {
+                                "L": []
+                            },
+                            "firstName": {
+                                "S": "Test"
+                            },
+                            "lastName": {
+                                "S": "Developer"
+                            },
+                            "bio": {
+                                "S": "Test developer bio"
+                            }
+                        }
+                    },
+                    "updatedAt": {
+                        "S": "2026-03-14T17:48:16.844Z"
+                    }
+                }
+            },
+            "gsi1pk": {
+                "S": "developer"
+            }
+        },
+        {
+            "gsi2sk": {
+                "S": "flexible"
+            },
+            "entityType": {
+                "S": "Project"
+            },
+            "gsi1sk": {
+                "S": "active"
+            },
+            "data": {
+                "M": {
+                    "createdAt": {
+                        "S": "2026-03-11T07:20:34.226Z"
+                    },
+                    "clientId": {
+                        "S": "41530d0a-70a1-70f5-5447-a13bf7b2068d"
+                    },
+                    "description": {
+                        "S": "asndlnaslk"
+                    },
+                    "timeline": {
+                        "M": {
+                            "estimatedWeeks": {
+                                "N": "3"
+                            },
+                            "flexibility": {
+                                "S": "flexible"
+                            }
+                        }
+                    },
+                    "proposals": {
+                        "L": []
+                    },
+                    "title": {
+                        "S": "leetcode"
+                    },
+                    "milestones": {
+                        "L": []
+                    },
+                    "projectId": {
+                        "S": "3bc8a12e-b8fd-4eaa-8fc5-a7b89b5ec41a"
+                    },
+                    "status": {
+                        "S": "active"
+                    },
+                    "budget": {
+                        "M": {
+                            "max": {
+                                "N": "5678"
+                            },
+                            "currency": {
+                                "S": "USD"
+                            },
+                            "min": {
+                                "N": "3456"
+                            }
+                        }
+                    },
+                    "updatedAt": {
+                        "S": "2026-03-11T07:22:17.832Z"
+                    }
+                }
+            },
+            "sk": {
+                "S": "METADATA"
+            },
+            "pk": {
+                "S": "PROJECT#3bc8a12e-b8fd-4eaa-8fc5-a7b89b5ec41a"
+            },
+            "gsi1pk": {
+                "S": "USER#41530d0a-70a1-70f5-5447-a13bf7b2068d"
+            },
+            "gsi2pk": {
+                "S": "3456-5678"
+            }
+        },
+        {
+            "entityType": {
+                "S": "UserProfile"
+            },
+            "sk": {
+                "S": "PROFILE"
+            },
+            "gsi1sk": {
+                "S": "41530d0a-70a1-70f5-5447-a13bf7b2068d"
+            },
+            "pk": {
+                "S": "USER#41530d0a-70a1-70f5-5447-a13bf7b2068d"
+            },
+            "data": {
+                "M": {
+                    "userType": {
+                        "S": "client"
+                    },
+                    "userId": {
+                        "S": "41530d0a-70a1-70f5-5447-a13bf7b2068d"
+                    },
+                    "email": {
+                        "S": "inlandmitzi@dollicons.com"
+                    },
+                    "profile": {
+                        "M": {
+                            "skills": {
+                                "L": []
+                            },
+                            "firstName": {
+                                "S": "Ayush"
+                            },
+                            "lastName": {
+                                "S": "Test"
+                            },
+                            "bio": {
+                                "S": ""
+                            },
+                            "hourlyRate": {
+                                "NULL": true
+                            }
+                        }
+                    },
+                    "updatedAt": {
+                        "S": "2026-03-11T07:21:39.115Z"
+                    }
+                }
+            },
+            "gsi1pk": {
+                "S": "client"
+            }
+        }
+    ],
+    "Count": 7,
+    "ScannedCount": 7
+}

@@ -52,8 +52,8 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
       entityType: 'Project',
       gsi1pk: `USER#${userId}`, // owner's userId for GSI1 query
       gsi1sk: 'draft',          // status as the sort key
-      gsi2pk: `${budget?.min || 0}-${budget?.max || 0}`,
-      gsi2sk: timeline?.flexibility || 'flexible',
+      gsi2pk: `STATUS#draft`, // status for marketplace queries
+      gsi2sk: now,            // createdAt for sorting
       data: project
     }
 

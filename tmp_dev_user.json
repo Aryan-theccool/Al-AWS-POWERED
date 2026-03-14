@@ -1,0 +1,24 @@
+{
+  "pk": {"S": "USER#a133fdea-40d1-70a7-f780-31c01e637f62"},
+  "sk": {"S": "PROFILE"},
+  "entityType": {"S": "UserProfile"},
+  "gsi1pk": {"S": "developer"},
+  "gsi1sk": {"S": "a133fdea-40d1-70a7-f780-31c01e637f62"},
+  "data": {
+    "M": {
+      "userId": {"S": "a133fdea-40d1-70a7-f780-31c01e637f62"},
+      "email": {"S": "test_dev@claritybridge.com"},
+      "userType": {"S": "developer"},
+      "profile": {
+        "M": {
+          "firstName": {"S": "Test"},
+          "lastName": {"S": "Developer"},
+          "bio": {"S": "Test developer bio"},
+          "skills": {"L": []}
+        }
+      },
+      "createdAt": {"S": "2026-03-14T17:48:16.844Z"},
+      "updatedAt": {"S": "2026-03-14T17:48:16.844Z"}
+    }
+  }
+}

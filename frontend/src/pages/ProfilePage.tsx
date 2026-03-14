@@ -6,7 +6,7 @@ import { api } from '../services/api'
 import toast from 'react-hot-toast'
 
 const ProfilePage: React.FC = () => {
-  const { user: authUser, signOut } = useAuth()
+  const { user: authUser, signOut, refreshUser } = useAuth()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
@@ -53,6 +53,7 @@ const ProfilePage: React.FC = () => {
         hourlyRate: form.hourlyRate ? parseFloat(form.hourlyRate) : null,
         userType: form.userType,
       })
+      await refreshUser()
       toast.success('Profile saved!')
     } catch (err) {
       toast.error('Failed to save profile')

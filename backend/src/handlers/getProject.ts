@@ -21,8 +21,8 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     const project = record.data || record
 
-    // Ensure the requesting user owns this project
-    if (project.clientId !== userId) {
+    // Ensure the requesting user owns this project or the project is active
+    if (project.clientId !== userId && project.status !== 'active') {
       return error('Forbidden', 403)
     }
 
