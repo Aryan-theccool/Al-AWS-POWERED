@@ -1,0 +1,15 @@
+﻿[
+    "ClarityBridge-GetProject-dev",
+    "ClarityBridge-ListActiveProjects-dev",
+    "ClarityBridge-GetProposals-dev",
+    "ClarityBridge-CreateProject-dev",
+    "ClarityBridge-UpdateProject-dev",
+    "ClarityBridge-GetProfile-dev",
+    "ClarityBridge-GetMessages-dev",
+    "ClarityBridge-ListProjects-dev",
+    "ClarityBridge-UpdateProfile-dev",
+    "ClarityBridge-SendMessage-dev",
+    "ClarityBridge-AnalyzeProject-dev",
+    "ClarityBridge-GetPresignedUploadUrl-dev",
+    "ClarityBridge-CreateProposal-dev"
+]

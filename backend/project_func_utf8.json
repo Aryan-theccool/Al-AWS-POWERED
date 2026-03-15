@@ -1,0 +1,67 @@
+﻿{
+    "Configuration": {
+        "FunctionName": "ClarityBridge-AnalyzeProject-dev",
+        "FunctionArn": "arn:aws:lambda:ap-south-1:121084934518:function:ClarityBridge-AnalyzeProject-dev",
+        "Runtime": "nodejs20.x",
+        "Role": "arn:aws:iam::121084934518:role/claritybridge-backend-AnalyzeProjectFunctionRole-6C0j1RNMBDGk",
+        "Handler": "analyzeProject.handler",
+        "CodeSize": 170913,
+        "Description": "",
+        "Timeout": 60,
+        "MemorySize": 512,
+        "LastModified": "2026-03-15T11:49:59.000+0000",
+        "CodeSha256": "SLxIBk8mp7E6J8y54FS7f4p74Cm90xZ3anj+RrneTyM=",
+        "Version": "$LATEST",
+        "Environment": {
+            "Variables": {
+                "JWT_SECRET": "your_jwt_secret_here",
+                "GEMINI_API_KEY": "AIzaSyBi9fiqMDZ7nnwqFYOVHg6Ce5FzUj3OAGw",
+                "DYNAMODB_TABLE_NAME": "ClarityBridge-dev",
+                "OPENAI_API_KEY": "sk-proj-7_your_openai_key",
+                "COGNITO_CLIENT_ID": "5n8v1587v5q0v5v5v5v5v5v5v",
+                "COGNITO_USER_POOL_ID": "us-east-1_eXmH1fB8G",
+                "GOOGLE_API_KEY": "AIzaSyBi9fiqMDZ7nnwqFYOVHg6Ce5FzUj3OAGw"
+            }
+        },
+        "TracingConfig": {
+            "Mode": "PassThrough"
+        },
+        "RevisionId": "10a15de6-a9ae-49d1-9382-78f12fdff64c",
+        "Layers": [
+            {
+                "Arn": "arn:aws:lambda:ap-south-1:121084934518:layer:ClarityBridge-Dependencies-dev:9",
+                "CodeSize": 8488583
+            }
+        ],
+        "State": "Active",
+        "LastUpdateStatus": "Successful",
+        "PackageType": "Zip",
+        "Architectures": [
+            "x86_64"
+        ],
+        "EphemeralStorage": {
+            "Size": 512
+        },
+        "SnapStart": {
+            "ApplyOn": "None",
+            "OptimizationStatus": "Off"
+        },
+        "RuntimeVersionConfig": {
+            "RuntimeVersionArn": "arn:aws:lambda:ap-south-1::runtime:2d788b26ac416854c5eb831c9f46cb2e0a0ddcee84b1a9b114acbdfdb644c8c1"
+        },
+        "LoggingConfig": {
+            "LogFormat": "Text",
+            "LogGroup": "/aws/lambda/ClarityBridge-AnalyzeProject-dev"
+        }
+    },
+    "Code": {
+        "RepositoryType": "S3",
+        "Location": "https://awslambda-ap-s-1-tasks.s3.ap-south-1.amazonaws.com/snapshots/121084934518/ClarityBridge-AnalyzeProject-dev-56e78009-d682-4b15-9aa1-ef83c8cd2f6a?versionId=IGgOE2pwhsEopS7Xr.8xyhMleta_7Rck&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEPT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiSDBGAiEAmH0dpGn%2Fy8SpzdC3A73m7Z3CQSCupF74DORqBZE0EDgCIQD1y3QYOxkASWPqo6VoJ9pHmNRPhvbI3r%2BtEOZQCU32jyqUAgi%2B%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAQaDDU0NTI1NTIwMTMwNyIMxbwVKZmmL9Hgm01nKugB6SEabxDuV2B%2F%2FLlIrRjQnQI13OI9omHYq%2Fnqu4dUipbt8kHuBTKPFk7iC42XbuX3z4Pp%2F42M1NDAniruiMEo0UgagUBglqWL68cobjxvW3uxw40kNtVhabRI4%2B4TK0OkXZiU9TMBMb8yJWIsYxAl%2F16iATauuq0LtvfHIeHXHEji3KMVrXCsiAar09W1FpmGgDD6Aw%2FTC0JjgsCpmxuhZveNmVK3A7rWPJHCuEWuuKxFu%2FcTd9Ba1d%2BFnm7vEXIN8am5cHDyOnRsRs7UOHU3Ql%2Fptex9cIQ1gLaoNYh1BdXI%2F6oAMOm7rTCsy9rNBjqMAWZkjXw9bA%2B1E81G5rL%2Foe7MNxT5rig0YlVk1C0N0DAlEn1HKta40Ystl6H0xgf88lDrbJalH0FAIl5HtkXyxRy%2FGBmQ9Eui2Kj6fHPdIzdMXTYzCux17StrrXcywiHPunAcPXEdWioGv6bwYiQOjfKd18vugnCpOLh4xfz8t%2Fn%2B1HRO5vFaWhCW4T3W&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20260315T125708Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Credential=ASIAX5456DINT2V5M7LG%2F20260315%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Signature=35b3e0651ad1772933faaa99e2a28818c05b36aac31823010bd0439007db3640"
+    },
+    "Tags": {
+        "aws:cloudformation:stack-name": "claritybridge-backend",
+        "lambda:createdBy": "SAM",
+        "aws:cloudformation:stack-id": "arn:aws:cloudformation:ap-south-1:121084934518:stack/claritybridge-backend/3cc2ce10-1ca4-11f1-8687-0a4b6cde6c2d",
+        "aws:cloudformation:logical-id": "AnalyzeProjectFunction"
+    }
+}
