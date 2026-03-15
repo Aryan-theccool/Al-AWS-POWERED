@@ -2,24 +2,19 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { OpenAI } from 'openai';
 
 export class AIService {
-  private static gemini: any = null;
-  private static openai: any = null;
+  // Use v1 API version which is the current stable version for Gemini 1.0/1.5
+  private static gemini: any = (process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY)
+    ? new GoogleGenerativeAI((process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY) as string) 
+    : null;
 
-  private static init() {
-    const key = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
-    if (key && !this.gemini) {
-      this.gemini = new GoogleGenerativeAI(key);
-    }
-    if (process.env.OPENAI_API_KEY && !this.openai) {
-      this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    }
-  }
+  private static openai: any = process.env.OPENAI_API_KEY 
+    ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) 
+    : null;
 
   /**
    * Analyze project requirements using AI
    */
   static async analyzeProject(description: string): Promise<any> {
-    this.init();
     const prompt = `
       You are an expert technical project manager. 
       Analyze the following rough project idea and return a structured JSON object with:
@@ -34,39 +29,28 @@ export class AIService {
       IMPORTANT: Return ONLY valid JSON.
     `;
 
-    const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
-
-    if (this.gemini && apiKey && !apiKey.includes('YOUR_')) {
+    if (this.gemini) {
       try {
-        console.info('Attempting Gemini Analysis...');
-        // Try flash first
-        const model = this.gemini.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        console.info('Using gemini-1.5-flash with v1 API for project analysis');
+        const model = this.gemini.getGenerativeModel({ model: 'gemini-1.5-flash' }, { apiVersion: 'v1' });
         const result = await model.generateContent(prompt);
         const text = result.response.text();
         return this.parseJSON(text);
       } catch (error: any) {
-        console.error('Gemini Analysis Error:', error.message);
-        
-        // Try to find any available model
+        console.error('Gemini Analysis Error (flash-v1):', error.message);
+        // Fallback to gemini-pro on v1
         try {
-          console.info('Listing available models for fallback...');
-          // Note: listModels() might not be directly on genAI instance in all versions
-          // but we can try common ones
-          const fallbacks = ['gemini-pro', 'gemini-1.0-pro', 'gemini-1.5-flash-latest'];
-          for (const fallback of fallbacks) {
-            try {
-              console.info(`Trying fallback model: ${fallback}`);
-              const model = this.gemini.getGenerativeModel({ model: fallback });
-              const result = await model.generateContent(prompt);
-              const text = result.response.text();
-              return this.parseJSON(text);
-            } catch (e) {}
-          }
-        } catch (e) {}
-        
-        throw error;
+          console.info('Attempting fallback with gemini-pro (v1)');
+          const model = this.gemini.getGenerativeModel({ model: 'gemini-pro' }, { apiVersion: 'v1' });
+          const result = await model.generateContent(prompt);
+          const text = result.response.text();
+          return this.parseJSON(text);
+        } catch (innerError: any) {
+          console.error('Gemini Fallback Error (pro-v1):', innerError.message);
+          throw error;
+        }
       }
-    } else if (this.openai && process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes('YOUR_')) {
+    } else if (this.openai) {
       try {
         console.info('Using OpenAI for project analysis');
         const response = await this.openai.chat.completions.create({
@@ -76,19 +60,18 @@ export class AIService {
         const text = response.choices[0].message.content || '';
         return this.parseJSON(text);
       } catch (error: any) {
-        console.error('OpenAI Project Analysis Error:', error.message);
+        console.error('OpenAI Analysis Error:', error.message);
         throw error;
       }
     }
 
-    throw new Error('No valid AI service configured. Please check your API keys.');
+    throw new Error('No valid AI service configured.');
   }
 
   /**
    * Analyze matching between a project and a proposal
    */
   static async analyzeProposalMatch(project: any, proposal: any): Promise<any> {
-    this.init();
     const prompt = `
       You are an expert technical recruiter and project advisor.
       Analyze the match between the following Project and Developer Proposal.
@@ -114,32 +97,27 @@ export class AIService {
       IMPORTANT: Return ONLY valid JSON.
     `;
 
-    const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
-
-    if (this.gemini && apiKey && !apiKey.includes('YOUR_')) {
+    if (this.gemini) {
       try {
-        console.info('Attempting Gemini Proposal Match...');
-        const model = this.gemini.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        console.info('Using gemini-1.5-flash with v1 API for proposal matching');
+        const model = this.gemini.getGenerativeModel({ model: 'gemini-1.5-flash' }, { apiVersion: 'v1' });
         const result = await model.generateContent(prompt);
         const text = result.response.text();
         return this.parseJSON(text);
       } catch (error: any) {
-        console.error('Gemini Proposal Match Error:', error.message);
-        
-        const fallbacks = ['gemini-pro', 'gemini-1.0-pro'];
-        for (const fallback of fallbacks) {
-          try {
-            console.info(`Trying fallback model: ${fallback}`);
-            const model = this.gemini.getGenerativeModel({ model: fallback });
-            const result = await model.generateContent(prompt);
-            const text = result.response.text();
-            return this.parseJSON(text);
-          } catch (e) {}
+        console.error('Gemini Match Error (flash-v1):', error.message);
+        try {
+          console.info('Attempting fallback with gemini-pro (v1)');
+          const model = this.gemini.getGenerativeModel({ model: 'gemini-pro' }, { apiVersion: 'v1' });
+          const result = await model.generateContent(prompt);
+          const text = result.response.text();
+          return this.parseJSON(text);
+        } catch (innerError: any) {
+          console.error('Gemini Fallback Error (pro-v1):', innerError.message);
+          throw error;
         }
-        
-        throw error;
       }
-    } else if (this.openai && process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes('YOUR_')) {
+    } else if (this.openai) {
       try {
         console.info('Using OpenAI for proposal matching');
         const response = await this.openai.chat.completions.create({
@@ -149,12 +127,12 @@ export class AIService {
         const text = response.choices[0].message.content || '';
         return this.parseJSON(text);
       } catch (error: any) {
-        console.error('OpenAI Proposal Match Error:', error.message);
+        console.error('OpenAI Match Error:', error.message);
         throw error;
       }
     }
 
-    throw new Error('No valid AI service configured. Please check your API keys.');
+    throw new Error('No valid AI service configured.');
   }
 
   private static parseJSON(text: string): any {
